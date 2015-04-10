@@ -6,7 +6,7 @@ python implementation of SAX (Symbolic Aggregate Approximation) for time series 
 2. The symbolic representation can be viewed as a low-dim (aggregate) representation of time series
 3. Symbol based algorithms such as suffix-tree, markov chain can be used to analyze time-series
 
-## [Reference]
+## Reference
 1. [paper](https://www.google.com.sg/url?sa=t&rct=j&q=&esrc=s&source=web&cd=1&cad=rja&uact=8&ved=0CB8QFjAA&url=http%3A%2F%2Fcs.gmu.edu%2F~jessica%2FSAX_DAMI_preprint.pdf&ei=q8AnVezIAc-SuAT14oGwDg&usg=AFQjCNFNhv_-lKglzZvDsuOBirND2ZINeQ&bvm=bv.90491159,d.c2E)
 2. [website](http://www.cs.ucr.edu/~eamonn/SAX.htm)
 3. [jmotif application](https://code.google.com/p/jmotif/wiki/SAX)
