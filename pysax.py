@@ -1,4 +1,5 @@
 import numpy as np 
+from fractions import Fraction 
 
 class SAXModel(object):
 	def __init__(self, window = None, stride = None, 
@@ -8,7 +9,7 @@ class SAXModel(object):
 		window: sliding window length to define the number of words
 		stride: stride of sliding, if stride < window, there is overlapping in windows
 		nbins: number of bins in each sliding window, defining the length of word 
-		alphabet: number of discretization  
+		alphabet: alphabet for symbolization, also determines number of value levels  
 		Not all parameters are used if only partial functions of the class is needed
 		"""
 		self.window = window
@@ -38,7 +39,19 @@ class SAXModel(object):
 		mu, sd = np.mean(s), np.std(s)
 		return (s - mu) / (sd + 1e-10)
 
-	def bin(self, window_signal):
-		##TODO
-		pass
+	def binpack(self, xs):
+		"""
+		for a singal of length 5, nbins = 3, 
+		it generates (p1, 2*p2/3), (p2/3, p3, p4/3), (2*p4/3, p5)
+		"""
+		xs = np.asarray(xs)
+		binsize = Fraction(len(xs), self.nbins)
+		wts = [1 for _ in xrange(int(binsize))] + [binsize-int(binsize)]
+		pos = 0
+		while pos < len(xs):
+			n = len(wts) - 1 if wts[-1] == 0 else len(wts)
+			yield xs[pos:(pos+n)] * wts[:n]
+			pos += len(wts) - 1
+			rest_wts = binsize-(1-wts[-1])
+			wts = [1-wts[-1]] + [1 for _ in xrange(int(rest_wts))] + [rest_wts-int(rest_wts)]
 
