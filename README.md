@@ -13,8 +13,15 @@ python implementation of SAX (Symbolic Aggregate Approximation) for time series 
 4. [tutorial](http://cs.gmu.edu/~jessica/sax.htm)
 5. [R package](http://rug.mnhn.fr/seewave/HTML/MAN/SAX.html)
 6. [Another python implementation](https://github.com/nphoff/saxpy)
+7. [GrammarVis](http://grammarviz2.github.io/grammarviz2_site/)
+8. [GrammarVis github](https://github.com/GrammarViz2/grammarviz2_src)
+9. [GrammarVis VSM github](https://github.com/jMotif/sax-vsm_classic)
+10. [jMotif github](https://github.com/jMotif/SAX)
 
 ## Why are we re-implement it?
 1. SAX has certain assumptions on time-series data, such as (1) local Gaussian, (2) fixed frequence, (3) real-valued signals. We want to explore more possiblities for other data
 2. We want a vector representation of time-series pieces, similiar to the idea of representing words a vectors (Google's word2vec)
 3. we need a fast parallel implementation
+
+## TODO
+examples 
