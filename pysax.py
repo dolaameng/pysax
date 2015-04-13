@@ -92,13 +92,23 @@ class SAXModel(object):
 		cutpoints = self.cutpoints[alphabet_sz]
 		return pd.cut(xs, bins = cutpoints, labels = self.alphabet)
 
-	def symbolize_window(self, window_signal):
+	def paa_window(self, window_signal):
 		"""
-		Symbolize one sliding window signal to a word
+		piecewise aggregate approximation: one sliding window signal to a word
 		"""
 		s = self.whiten(window_signal)
 		binsize = Fraction(len(s), self.nbins)
 		xs = map(lambda ss: np.sum(ss) / float(binsize), self.binpack(s))
+		return xs
+
+	def symbolize_window(self, window_signal):
+		"""
+		Symbolize one sliding window signal to a word
+		"""
+		# s = self.whiten(window_signal)
+		# binsize = Fraction(len(s), self.nbins)
+		# xs = map(lambda ss: np.sum(ss) / float(binsize), self.binpack(s))
+		xs = self.paa_window(window_signal)
 		return "".join(self.symbolize(xs))
 
 	def symbolize_signal(self, signal, parallel = None, n_jobs = -1):
@@ -131,6 +141,22 @@ class SAXModel(object):
 
 	def symbol_to_vector(self, words):
 		return np.array([np.asarray([self.sym2vec[w] for w in word]) for word in words])
+
+	def signal_to_paa_vector(self, signal, n_jobs = -1):
+		window_index = self.sliding_window_index(len(signal))
+		with tempfile.NamedTemporaryFile(delete=False) as f:
+				tf = f.name
+		print "save temp file at %s" % tf 
+		tfiles = joblib.dump(signal, tf)
+		xs = joblib.load(tf, "r")
+		n_jobs = joblib.cpu_count() if n_jobs == -1 else n_jobs 
+		window_index = list(window_index)
+		batch_size = len(window_index) / n_jobs
+		batches = chunk(window_index, batch_size)
+		vecs = Parallel(n_jobs)(delayed(joblib_paa_window)(self, xs, batch) for batch in batches)
+		for f in tfiles: os.unlink(f)
+		return np.vstack(vecs)
+
 	def symbol_distance(self, word1, word2):
 		cutpoints = self.cutpoints[len(self.alphabet)]
 		inverted_alphabet = dict([(w,i) for (i,w) in enumerate(self.alphabet, 1)])
@@ -142,6 +168,8 @@ class SAXModel(object):
 ## helper function
 def joblib_symbolize_window(sax, xs, batch):
 	return [sax.symbolize_window(xs[i]) for i in batch]
+def joblib_paa_window(sax, xs, batch):
+	return np.asarray([sax.paa_window(xs[i]) for i in batch])
 def chunk(xs, chunk_size):
 	p = 0
 	while p < len(xs):
