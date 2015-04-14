@@ -31,7 +31,7 @@ examples
 ## Idea
 1. sequitur will be used as the context-free grammar extractor for SAXed data
 2. the mined rules will be used for outlier/motif detection 
-3. we wrap the [c++ implementation](http://sequitur.info/latest/sequitur.tgz) for python usage
+3. we wrap the [c++ implementation](http://sequitur.info/latest/sequitur.tgz) for python usage - so it is just a quick workaround for now.
 
 ## References
 1. [three papers listed on Grammarviz website](http://grammarviz2.github.io/grammarviz2_site/)
