@@ -164,6 +164,18 @@ class SAXModel(object):
 			for (iw1, iw2) in zip(map(inverted_alphabet.get, word1), map(inverted_alphabet.get, word2))])
 		return np.sqrt(np.sum(diff**2))
 
+	def convert_index(self, word_indices = None, ts_indices = None):
+		"""
+		if word_index is not None, convert word (sliding window) index to time series index 
+		otherwise convert ts_index to word_index 
+		"""
+		if word_indices is not None:
+			return [wi * self.stride for wi in word_indices]
+		elif ts_indices is not None:
+			return [ti / self.stride for ti in ts_indices]
+		else:
+			raise ValueError("either word_index or ts_index needs to be specified")
+
 
 ## helper function
 def joblib_symbolize_window(sax, xs, batch):

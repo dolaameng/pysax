@@ -9,11 +9,38 @@ from itertools import groupby
 import numpy as np
 
 class TSOutlierDetection(object):
+
+	################################ main interface ################################3
 	def __init__(self, sax_params, sequitur_params):
 		self.sax_params = sax_params
 		self.sequitur_params = sequitur_params
 		self.sax_model = pysax.SAXModel(**self.sax_params)
 		self.sequitur_model = pysequitur.SequiturModel(**self.sequitur_params)
+
+	def fit(self, ts):
+		"""build necessary strucuture for a time series for later query
+		self.symbols: SAX reprsentation of time series
+		reduced_symbols: symbols after numerosity_reduce
+		self.reduced_symbols_indices: range(slices) of reduced_symbols in original symbols 
+		self.word_occurrences: word occurrences (in rules) from reduced_symbols
+		"""
+		self.symbols = self.sax_symbolize(ts)
+		reduced_symbols, self.reduced_symbols_indices = self.numerosity_reduce(self.symbols)
+		self.word_occurrences = self.grammar_induce(reduced_symbols)
+		return self
+
+	def timeseries_density(self):
+		ts_indices = self.sax_model.convert_index([s.start for s in self.reduced_symbols_indices])
+		return ts_indices, self.word_occurrences
+
+	def detect_outliers(self, occurrence_thr = 0):
+		if type(occurrence_thr) is float: ## percentile, occurrence_thr [0, 1]
+			occurrence_thr = max(np.percentile(self.word_occurrences, occurrence_thr*100), 0)
+		tswindow_index, tswindow_occurrence = self.timeseries_density()
+		outlier_index = np.where(np.asarray(tswindow_occurrence) <= occurrence_thr)[0]
+		return [slice(s, s+self.sax_model.window) for s in np.asarray(tswindow_index)[outlier_index]], np.asarray(tswindow_occurrence)[outlier_index]
+
+	############################ helper function #########################################
 
 	def sax_symbolize(self, ts):
 		return self.sax_model.symbolize_signal(ts, parallel="joblib")
