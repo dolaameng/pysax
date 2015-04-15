@@ -50,3 +50,17 @@ examples
 
 ## TODO
 examples
+
+# grammar-based outlier detection
+
+## Idea
+1. to implement the idea based on [Time series anomaly discovery with grammar-based compression](file:///home/chenlin/Downloads/14-05.pdf) - using grammar analysis for time series outlier detection
+2. main steps:
+	a. SAX-symbolize the time series
+	b. numerosity reduction
+	c. grammar induction by sequitur
+	d. map rules to subsequences
+	e. mine the patten
+
+## TODO
+examples
