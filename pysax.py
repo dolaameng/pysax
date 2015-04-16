@@ -9,7 +9,7 @@ import joblib, tempfile, os
 
 class SAXModel(object):
 	def __init__(self, window = None, stride = None, 
-				nbins = None, alphabet = None):
+				nbins = None, alphabet = None, epsilon = None):
 		"""
 		Assume a gapless (fixed freq. no missing value) time series
 		window: sliding window length to define the number of words
@@ -23,6 +23,7 @@ class SAXModel(object):
 		self.nbins = nbins
 		self.alphabet = list(alphabet or "ABCD")
 		self.nlevels = len(self.alphabet)
+		self.epsilon = epsilon or 1e-6
 		
 		if not (3 <= self.nlevels <= 10):
 			raise ValueError("alphabet size is within 3 and 10 for current impl.")
@@ -63,9 +64,13 @@ class SAXModel(object):
 	def whiten(self, window_signal):
 		"""
 		Perform whitening - it should be local to a sliding window 
+		If the sd of window_signal is smaller than epsilon, it means it is (almost) constant.
+		In this case, return a list of 0 to avoid magnifying the noise.  
 		"""
 		s = np.asarray(window_signal)
 		mu, sd = np.mean(s), np.std(s)
+		if sd < self.eps: 
+            return [0 for entry in s]
 		return (s - mu) / (sd + 1e-10)
 
 	def binpack(self, xs):
@@ -159,7 +164,7 @@ class SAXModel(object):
 
 	def symbol_distance(self, word1, word2):
 		cutpoints = self.cutpoints[len(self.alphabet)]
-		inverted_alphabet = dict([(w,i) for (i,w) in enumerate(self.alphabet, 1)])
+		inverted_alphabet = dict([(w,i) for (i,w) in enumerate(self.alphabet, 1)]) #{'A': 1, 'B': 2, 'C': 3, 'D': 4}
 		diff = np.asarray([0 if abs(iw1-iw2) <= 1 else cutpoints[max(iw1,iw2)-1] - cutpoints[min(iw1, iw2)]
 			for (iw1, iw2) in zip(map(inverted_alphabet.get, word1), map(inverted_alphabet.get, word2))])
 		return np.sqrt(np.sum(diff**2))
