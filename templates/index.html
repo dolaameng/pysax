@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Bergen 2.0</title>
+		<link rel="icon" type="image/png" href="../img/RR.ico">
+		<!--
+		__  ___           ___  __        ___  ___ ___
+		/__`  |  \ / |    |__  /__` |__| |__  |__   |
+		.__/  |   |  |___ |___ .__/ |  | |___ |___  |
+		-->
+		<!-- Bootstrap Stylesheet -->
+		<link rel="stylesheet" href="{{url_for('static', filename='lib/bootstrap-3.3.4-dist/css/bootstrap.min.css')}}">
+		<!-- Bootstrap Theme Stylesheet -->
+		<link rel="stylesheet" href="{{url_for('static', filename='lib/bootstrap-3.3.4-dist/css/bootstrap-theme.min.css')}}">
+		<!-- Page Stylesheet -->
+		<link rel="stylesheet" href="{{url_for('static', filename='css/index.css')}}">
+		<!--
+		__   __   __     __  ___
+		/__` /  ` |__) | |__)  |
+		.__/ \__, |  \ | |     |
+		-->
+		<!-- jQuery -->
+		<script src="{{url_for('static', filename='lib/jQuery/jquery-2.1.3.min.js')}}"></script>
+		<!-- Bootstrap JavaScript -->
+		<script src="{{url_for('static', filename='lib/bootstrap-3.3.4-dist/js/bootstrap.min.js')}}"></script>
+		<!-- D3.js -->
+		<script src="{{url_for('static', filename='lib/d3-master/d3.min.js')}}" charset="utf-8"></script>
+		<!-- Chart.js -->
+		<script type="text/javascript" src="{{url_for('static', filename='lib/Chart.js-master/Chart.min.js')}}"></script>
+		<!-- Page Script -->
+		<script src="{{url_for('static', filename='js/index.js')}}"></script>
+	</head>
+	<body>
+		<nav class="navbar navbar-default navbar-fixed-top">
+			<div class="container">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="#">Time Series Search Engine</a>
+				</div>
+				<div id="navbar" class="navbar-collapse collapse">
+					<ul class="nav navbar-nav">
+						<li class="text-success"><a href="#" id="site-subtitle"><i>by Computational Engineering (ATC, Singapore)</i></a></li>
+					</ul>
+					<ul class="nav navbar-nav navbar-right">
+						<li class=""><a href="#"><span class="glyphicon glyphicon-user"></span>&nbsp;Demo User</a></li>
+						<li><a href="#"><span class="glyphicon glyphicon-log-out"></span>&nbsp;Log Out</a></li>
+					</ul>
+					</div><!--/.nav-collapse -->
+				</div>
+				</nav><!-- close navbar -->
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-xs-12">
+							<div class="panel panel-default site-main">
+								<div class="panel-body">
+									<div class="col-xs-9">
+									<svg id="visualisation" width="1400" height="500"></svg>
+								</div>
+								<div class="col-xs-3">
+									<div class="panel panel-default">
+										<div class="panel-body">
+											<form class="form-horizontal">
+												<div class="form-group site-data-load">
+													<label for="dataSource" class="col-xs-4">Data Source</label>
+													<div class="col-xs-8">
+														<select class="form-control" id="dataSource">
+															<option value="" disabled selected>Please select...</option>
+															<option>ECG1</option>
+															<option>ECG2</option>
+														</select>
+													</div>
+												</div>
+											</form>
+										</div>
+									</div>
+									<div class="panel panel-default">
+										<div class="panel-body">
+											<form class="form-horizontal" id="searchForm">
+												<div>
+													<b><i>Search for pattern:</i></b>
+												</div>
+
+												<div class="form-group">
+													<label for="target_start" class="col-xs-4">Start from</label>
+													<div class="col-xs-8">
+														<input type="number" class="form-control" id="target_start" name="target_start" placeholder="0">
+													</div>
+												</div>
+												<div class="form-group">
+													<label for="target_end" class="col-xs-4">To</label>
+													<div class="col-xs-8">
+														<input type="number" class="form-control" id="target_end" name="target_end" placeholder="200">
+													</div>
+												</div>
+
+												<p><b><i>Parameters:</i></b></p>
+												<div class="form-group">
+													<label for="stride" class="col-xs-4">Stride</label>
+													<div class="col-xs-8">
+														<input type="number" class="form-control" id="stride" name="stride" placeholder="20" value="40">
+													</div>
+												</div>
+												<div class="form-group">
+													<label for="nbins" class="col-xs-4">nbins</label>
+													<div class="col-xs-8">
+														<input type="number" class="form-control" id="nbins" name="nbins" placeholder="7" value="7">
+													</div>
+												</div>
+												<div class="form-group">
+													<label for="alphabet" class="col-xs-4">Alphabet</label>
+													<div class="col-xs-8">
+														<select class="form-control" name="alphabet">
+															<option value="ABC">ABC</option>
+															<option value="ABCD" selected>ABCD</option>
+															<option value="ABCDE">ABCDE</option>
+														</select>
+													</div>
+												</div>
+												<div class="form-group">
+													<label for="threshold" class="col-xs-4">Threshold</label>
+													<div class="col-xs-8">
+														<input type="number" class="form-control" id="threshold" name="threshold" placeholder="0.1" value="0.1">
+													</div>
+												</div>
+												<div class="form-group">
+													<div class="col-xs-12">
+														<button type="button" class="btn btn-info btn-block" id="search">Search</button>
+													</div>
+													
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="panel panel-default site-search">
+							<div class="panel-heading">
+								<p>Search Result</p>
+							</div>
+							<div class="panel-body" id="search-result">
+							</div>
+						</div>
+						<!-- <div class="col-xs-9 text-right">
+							<button type="button" class="btn btn-info" id="clear_highlight">Clear highlight</button>
+						</div> -->
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
