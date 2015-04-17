@@ -15,8 +15,9 @@ DEFAULT_ALPHABET = "ABCD"
 DEFAULT_NBINS = 7
 
 DATA = [""]
-s = pd.read_table(open('static/data/chfdb_chf01_275_arti.txt',"r"), header = None,  names = ['y'])
-
+s1 = pd.read_table(open('static/data/chfdb_chf01_275_arti.txt',"r"), header = None,  names = ['y'])
+s2 = pd.read_table(open('static/data/chfdb_chf01_275_arti_2.txt',"r"), header = None,  names = ['y'])
+s = s1
 
 @app.route("/", methods=["GET"])
 def index():
@@ -24,7 +25,12 @@ def index():
 
 @app.route('/get_ts', methods=["GET"])
 def get_ts():
-	return json.dumps([{'x': x, 'y': y} for x, y in enumerate(s.y)]) 
+	d = request.args["dataSource"]
+	if d == "ECG1":
+		return json.dumps([{'x': x, 'y': y} for x, y in enumerate(s1.y)])
+	elif d == "ECG2":
+		s = s2
+		return json.dumps([{'x': x, 'y': y} for x, y in enumerate(s2.y)])
 
 @app.route("/search", methods=["POST"])
 def search_pattern():
@@ -37,10 +43,11 @@ def search_pattern():
 	threshold = float(request.get_json()["threshold"]) or 0.1
 	sax = pysax.SAXModel(stride = stride, nbins = nbins, alphabet=alphabet)
 	found = sax.search_pattern(s.y, target_start, target_end, threshold)
-	return json.dumps(list({"start": i.start, "stop": i.stop} for i in found))
-	############ dummy results generator ################
+	print found
+	return json.dumps(list({"start": i[0].start, "stop": i[0].stop} for i in found))
 
+# @app.route("/rules")
 
 if __name__ == '__main__':
 	# app.run(debug = True, port = 5001)
-	app.run(debug = True, port = 5001, host = "0.0.0.0")
+	app.run(debug = True, port = 5004)

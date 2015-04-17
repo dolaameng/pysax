@@ -42,9 +42,12 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand" href="#">Bergen 2.0</a>
+					<a class="navbar-brand" href="#">Time Series Search Engine</a>
 				</div>
 				<div id="navbar" class="navbar-collapse collapse">
+					<ul class="nav navbar-nav">
+						<li class="text-success"><a href="#" id="site-subtitle"><i>by Computational Engineering (ATC, Singapore)</i></a></li>
+					</ul>
 					<ul class="nav navbar-nav navbar-right">
 						<li class=""><a href="#"><span class="glyphicon glyphicon-user"></span>&nbsp;Demo User</a></li>
 						<li><a href="#"><span class="glyphicon glyphicon-log-out"></span>&nbsp;Log Out</a></li>
@@ -69,8 +72,8 @@
 													<div class="col-xs-8">
 														<select class="form-control" id="dataSource">
 															<option value="" disabled selected>Please select...</option>
-															<option>A</option>
-															<option>B</option>
+															<option>ECG1</option>
+															<option>ECG2</option>
 														</select>
 													</div>
 												</div>
@@ -80,22 +83,24 @@
 									<div class="panel panel-default">
 										<div class="panel-body">
 											<form class="form-horizontal" id="searchForm">
-												<p><b><i>Please specify the pattern you want to search:</i></b></p>
+												<div>
+													<b><i>Search for pattern:</i></b>
+												</div>
 
 												<div class="form-group">
-													<label for="From" class="col-xs-4">Target Start</label>
+													<label for="target_start" class="col-xs-4">Start from</label>
 													<div class="col-xs-8">
 														<input type="number" class="form-control" id="target_start" name="target_start" placeholder="0">
 													</div>
 												</div>
 												<div class="form-group">
-													<label for="To" class="col-xs-4">Target End</label>
+													<label for="target_end" class="col-xs-4">To</label>
 													<div class="col-xs-8">
 														<input type="number" class="form-control" id="target_end" name="target_end" placeholder="200">
 													</div>
 												</div>
 
-												<p><b><i>Default Parameters:</i></b></p>
+												<p><b><i>Parameters:</i></b></p>
 												<div class="form-group">
 													<label for="stride" class="col-xs-4">Stride</label>
 													<div class="col-xs-8">
@@ -136,16 +141,16 @@
 								</div>
 							</div>
 						</div>
-<!-- 						<div class="panel panel-default site-search">
+						<div class="panel panel-default site-search">
 							<div class="panel-heading">
 								<p>Search Result</p>
 							</div>
 							<div class="panel-body" id="search-result">
 							</div>
-						</div> -->
-						<div class="col-xs-9 text-right">
-							<button type="button" class="btn btn-info" id="clear_highlight">Clear highlight</button>
 						</div>
+						<!-- <div class="col-xs-9 text-right">
+							<button type="button" class="btn btn-info" id="clear_highlight">Clear highlight</button>
+						</div> -->
 
 					</div>
 				</div>

@@ -177,6 +177,7 @@ class SAXModel(object):
             raise ValueError("either word_index or ts_index needs to be specified")
 
     def search_pattern(self, signal, target_start, target_end, threshold = 0.1):
+        """RETURN: list of tuples containing found indices sorted by similarity. [(slice, distance)]"""
         if target_start > target_end:
             raise ValueError("Target start index must be smaller than target end index")
         self.window = target_end - target_start
@@ -188,11 +189,15 @@ class SAXModel(object):
         found_indices = []
         
         for (i, w) in enumerate(symbols):
-            if self.symbol_distance(w, target) <= threshold:
-                found_indices.append(slice(i * self.stride, i * self.stride + self.window))
+            d = self.symbol_distance(w, target)
+            if d <= threshold:# and i * self.stride != target_start: #exclude itself
+                found_indices.append((slice(i * self.stride, i * self.stride + self.window), d))
+
         ###TODO: the matches found this way may contain many "trivial matches", 
         ###need to filter them out and return as 1 result
-        return found_indices
+        return  sorted(found_indices, key = lambda x: x[1])
+
+       
 
 
 ## helper function

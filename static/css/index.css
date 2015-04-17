@@ -19,3 +19,8 @@
 .site-data-load {
 	margin: 0;
 }
+
+#site-subtitle {
+	margin-left: 0;
+	color: #28BB9C;
+}

@@ -1,12 +1,11 @@
 $(function() {
     console.log('>>> jQuery is ready');
-
     /*
      * Site Control Script
      */
     $('#search').on('click', function() {
         var formData = $('#searchForm').serializeObject();
-
+        console.log(formData);
         // TODO: Your API HERE
         $.ajax({
             type: 'POST',
@@ -22,7 +21,17 @@ $(function() {
             },
             success: function(data) {
                 console.log(data);
-                chart.highlight(data);
+                d3.select("#visualisation").selectAll("rect").remove();
+                chart.highlight(data, "teal");
+                // chart.highlight_selection({"start": formData.target_start, "stop": formData.target_end}, "blue");
+
+                $("#search-result").empty();
+                html = "Found " + data.length + " similar patterns:";
+                for (var i = 0; i < data.length; ++i) {
+                    var segments = data[i];
+                    html += "<br>From " + segments.start + " to " + segments.stop; 
+                }
+                $("#search-result").html(html);
             },
         });
     });
@@ -47,9 +56,9 @@ $(function() {
         });
     });
 
-    $('#clear_highlight').on('click', function(){
-        chart.clear_highlight();
-    });
+    // $('#clear_highlight').on('click', function(){
+    //     chart.clear_highlight();
+    // });
     
 
 
@@ -58,9 +67,9 @@ $(function() {
         $.ajax({
             type: 'GET',
             url: '/get_ts',
+            data: {"dataSource": $(this).val()},
             dataType: 'json',
             cache: false,
-            processData: false,
             async: true,
             beforeSend: function() {
                 // TODO
@@ -92,7 +101,7 @@ var chart = {
                 bottom: 20,
                 left: 50
             };
-
+        vis.selectAll("*").remove();
         chart.xScale = d3.scale.linear().range([MARGINS.left, WIDTH - MARGINS.right]).domain([d3.min(data, function(d) { return d.x;}), 
                     d3.max(data, function(d) { return d.x;})]);
 
@@ -131,8 +140,9 @@ var chart = {
             .attr('fill', 'none');
     }
     ,
-    highlight: function (data) {
+    highlight: function (data, color) {
         var vis = d3.select("#visualisation");
+        // vis.selectAll("rect").remove();
         vis.selectAll("rect")
             .data(data)
             .enter()
@@ -141,14 +151,27 @@ var chart = {
             .attr("y", 20) //hardcoded, need to parameterize later
             .attr("height", 470) //hardcoded, need to parameterize later
             .attr("width", function(d) {return chart.xScale(d.stop) - chart.xScale(d.start);})
-            .attr("fill", "teal")
+            .attr("fill", color)
             .attr("fill-opacity", 0.3);
     }
     ,
-    clear_highlight: function (data) {
-        var vis = d3.select("#visualisation");
-        vis.selectAll("rect").remove();
-    }
+    // highlight_selection: function (data, color) {
+    //     var vis = d3.select("#visualisation");
+    //     // vis.selectAll("rect").remove();
+    //     vis.append("rect")
+    //         .data(data)
+    //         .enter()
+    //         .attr("x", function(d) {return chart.xScale(d.start);})
+    //         .attr("y", 20) //hardcoded, need to parameterize later
+    //         .attr("height", 470) //hardcoded, need to parameterize later
+    //         .attr("width", function(d) {return chart.xScale(d.stop) - chart.xScale(d.start);})
+    //         .attr("fill", color)
+    //         .attr("fill-opacity", 0.3);
+    // }
+    // clear_highlight: function (data) {
+    //     var vis = d3.select("#visualisation");
+    //     vis.selectAll("rect").remove();
+    // }
 };
 
 
