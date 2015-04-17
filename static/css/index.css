@@ -1,0 +1,21 @@
+.axis path {
+    fill: none;
+    stroke: #777;
+    shape-rendering: crispEdges;
+}
+.axis text {
+    font-family: Lato;
+    font-size: 13px;
+}
+
+.site-main {
+	margin: 70px 0 0 0;
+}
+
+.site-search {
+	margin: 10px 0 0 0;
+}
+
+.site-data-load {
+	margin: 0;
+}
