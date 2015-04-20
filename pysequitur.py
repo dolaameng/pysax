@@ -6,7 +6,7 @@ from collections import Counter
 class SequiturModel(object):
 	def __init__(self, sequitur_path):
 		self.sequitur_path = sequitur_path
-		self.command = [self.sequitur_path, "-p", "-r"]
+		self.command = [self.sequitur_path, "-p", "-r", "-k", "2"]
 		self.charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!#$%&*+,-.:;<=>?@[]"
 	
 	def fit(self, words):
@@ -37,7 +37,7 @@ class SequiturModel(object):
 			self.rules[ruleid] = dict(body = rule[0].split(), 
 				expansion = [rule[1][i:i+self.word_length] for i in xrange(0, len(rule[1]), self.word_length)])
 		c = Counter()
-		for rule in self.rules.values(): c.update(rule["expansion"])
+		for rule in self.rules.values(): c.update(rule["body"])
 		## occurrences of each word in all non-root rules (rule 1 to n)
 		self.word2rule_occurrences = dict(c)
 		return self
